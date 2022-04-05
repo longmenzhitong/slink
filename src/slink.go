@@ -5,17 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"slink/src/rds"
 	"slink/src/urls"
 	"strings"
 )
-
-func init() {
-	err := rds.InitRedisClient()
-	if err != nil {
-		panic(err)
-	}
-}
 
 func main() {
 	router := mux.NewRouter()

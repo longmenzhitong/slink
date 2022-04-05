@@ -1,25 +1,23 @@
 package rds
 
 import (
-	"fmt"
 	"github.com/go-redis/redis"
+	"log"
+	"slink/src/conf"
 )
 
 var Client *redis.Client
 
-var mineConf = redis.Options{
-	Addr:     "",
-	Password: "",
-	DB:       0,
-}
-
-func InitRedisClient() error {
-	client := redis.NewClient(&mineConf)
+func init() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     conf.RdsAddr,
+		Password: conf.RdsPswd,
+		DB:       conf.RdsDb,
+	})
 	_, err := client.Ping().Result()
 	if err != nil {
-		return fmt.Errorf("ping to redis error: %v", err)
+		log.Fatalf("ping to redis error: %v", err)
 	} else {
 		Client = client
-		return nil
 	}
 }
