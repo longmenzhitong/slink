@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+var Port string
+var Domain string
 var RdsAddr string
 var RdsPswd string
 var RdsDb int
@@ -40,6 +42,10 @@ func init() {
 		key := line[:i]
 		val := line[i+1:]
 		switch key {
+		case "port":
+			Port = val
+		case "domain":
+			Domain = val
 		case "rdsaddr":
 			RdsAddr = val
 		case "rdspswd":
@@ -51,4 +57,26 @@ func init() {
 			}
 		}
 	}
+
+	check()
+}
+
+func check() {
+	if Port == "" {
+		Port = "8080"
+	}
+	fmt.Printf("%-25s: %s\n", "port", Port)
+
+	if Domain == "" {
+		Domain = "localhost:8080"
+	}
+	fmt.Printf("%-25s: %s\n", "domain", Domain)
+
+	if RdsAddr == "" {
+		log.Fatal("redis address not found")
+	} else {
+		fmt.Printf("%-25s: %s\n", "redis address", RdsAddr)
+	}
+
+	fmt.Printf("%-25s: %d\n", "redis db", RdsDb)
 }

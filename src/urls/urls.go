@@ -2,6 +2,7 @@ package urls
 
 import (
 	"fmt"
+	"slink/src/conf"
 	"slink/src/rds"
 	"slink/src/scales"
 	"slink/src/sids"
@@ -48,5 +49,5 @@ func Expand(code string) (string, error) {
 }
 
 func wrap(code string) string {
-	return "localhost:8080/" + code
+	return conf.Domain + "/" + code
 }

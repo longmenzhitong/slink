@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"slink/src/conf"
 	"slink/src/urls"
 	"strings"
 )
@@ -13,7 +14,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/shorten", shortenHandler).Methods("POST")
 	router.HandleFunc("/{code}", redirectHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":"+conf.Port, router))
 }
 
 func shortenHandler(w http.ResponseWriter, req *http.Request) {
