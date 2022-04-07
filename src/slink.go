@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"slink/src/conf"
+	"slink/src/rds"
 	"slink/src/urls"
 	"strings"
 )
@@ -46,6 +47,11 @@ func redirectHandler(w http.ResponseWriter, req *http.Request) {
 		if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
 			url = "http://" + url
 		}
+
+		// 记录PV
+		pvKey := "slink:pv:" + code
+		rds.Client.Incr(pvKey)
+
 		http.Redirect(w, req, url, http.StatusFound)
 	}
 }
