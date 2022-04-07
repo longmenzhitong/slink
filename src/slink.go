@@ -13,8 +13,9 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/shorten", shortenHandler).Methods("POST")
-	router.HandleFunc("/{code}", redirectHandler).Methods("GET")
+	router.HandleFunc("/shorten", shortenHandler).Methods(http.MethodPost)
+	router.HandleFunc("/{code}", redirectHandler).Methods(http.MethodGet)
+	router.HandleFunc("/pv", pvHandler).Methods(http.MethodPost)
 	log.Fatal(http.ListenAndServe(":"+conf.Port, router))
 }
 
@@ -49,9 +50,29 @@ func redirectHandler(w http.ResponseWriter, req *http.Request) {
 		}
 
 		// 记录PV
-		pvKey := "slink:pv:" + code
+		pvKey := conf.PvKeyPrefix + code
 		rds.Client.Incr(pvKey)
 
 		http.Redirect(w, req, url, http.StatusFound)
 	}
+}
+
+func pvHandler(w http.ResponseWriter, req *http.Request) {
+	shortLink := req.FormValue("shortLink")
+	parts := strings.Split(shortLink, "/")
+	code := parts[len(parts)-1]
+	cmd := rds.Client.Get(conf.PvKeyPrefix + code)
+	pv, err := cmd.Result()
+	if err != nil {
+		_, err = fmt.Fprintf(w, "get pv error: %s", err.Error())
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		_, err = fmt.Fprintf(w, "%s", pv)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 }

@@ -9,11 +9,18 @@ import (
 	"strings"
 )
 
-var Port string
-var Domain string
-var RdsAddr string
-var RdsPswd string
-var RdsDb int
+var (
+	Port    string
+	Domain  string
+	RdsAddr string
+	RdsPswd string
+	RdsDb   int
+
+	SidKey        = "slink:sid"
+	CodeKeyPrefix = "slink:code:"
+	UrlKeyPrefix  = "slink:url:"
+	PvKeyPrefix   = "slink:pv:"
+)
 
 func init() {
 	homedir, err := os.UserHomeDir()

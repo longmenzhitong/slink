@@ -9,7 +9,7 @@ import (
 )
 
 func Shorten(originUrl string) (string, error) {
-	codeKey := "slink:code:" + originUrl
+	codeKey := conf.CodeKeyPrefix + originUrl
 
 	// 先尝试从缓存中获取
 	cmd := rds.Client.Get(codeKey)
@@ -30,7 +30,7 @@ func Shorten(originUrl string) (string, error) {
 
 	// 保存code与原始链接的映射关系
 	rds.Client.Set(codeKey, code, -1)
-	urlKey := "slink:url:" + code
+	urlKey := conf.UrlKeyPrefix + code
 	rds.Client.Set(urlKey, originUrl, -1)
 
 	// 拼接域名后返回
@@ -38,7 +38,7 @@ func Shorten(originUrl string) (string, error) {
 }
 
 func Expand(code string) (string, error) {
-	urlKey := "slink:url:" + code
+	urlKey := conf.UrlKeyPrefix + code
 	cmd := rds.Client.Get(urlKey)
 	url, err := cmd.Result()
 	if err != nil {
